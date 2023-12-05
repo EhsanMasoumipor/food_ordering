@@ -1,20 +1,27 @@
+import { Image } from '@/models/image';
 import { del, put } from '@vercel/blob';
+import mongoose from 'mongoose';
 import { NextResponse } from 'next/server';
 
-
 export async function POST(request) {
-    const { searchParams } = new URL(request.url);
-    const filename = searchParams.get('filename') || "";
+    try {
+        mongoose.connect(process.env.MONGO_URI);
+        const { searchParams } = new URL(request.url);
+        const image = searchParams.get('image') || "";
 
-    if (filename) {
-        const blob = await put(filename, request.body, {
-            access: 'public',
-        });
-
-        return NextResponse.json(blob);
-    } else {
-        return NextResponse.json({ message: "No file ditected" });
+        if (image) {
+            const blob = await put(image, request.body, {
+                access: 'public',
+            })
+            const saved_img = await Image.create({ image: blob.url.toString() })
+            return NextResponse.json({ blob, saved_img });
+        } else {
+            return NextResponse.json({ message: "No file ditected" });
+        }
+    } catch (error) {
+        return NextResponse.json({ message: error.message }, { status: 500 });
     }
+
 }
 
 export async function DELETE(request) {

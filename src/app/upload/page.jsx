@@ -15,7 +15,7 @@ export default function AvatarUploadPage() {
                     const file = inputFileRef.current.files?.[0];
 
                     const response = await fetch(
-                        `/api/upload/?filename=${file.name}`,
+                        `/api/upload/?image=${file.name}`,
                         {
                             method: 'POST',
                             body: file,
