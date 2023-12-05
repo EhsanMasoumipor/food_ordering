@@ -1,13 +1,19 @@
-"use client"
+"use client";
 import Image from 'next/image';
 import { useSession } from "next-auth/react"
 import { redirect } from "next/navigation";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function ProfilePage() {
-    const session = useSession()
-    const  [userName , setUserName] = useState(session?.data?.user?.name)
+    const session = useSession();
+    const [userName , setUserName] = useState('')
     const {status} = session
+
+    useEffect(() => {
+        if(status === 'authenticated'){
+            setUserName(session.data.user.name)
+        }
+    } , [session , status])
 
     if(status === 'loading') {
         return 'Loading...';
@@ -27,6 +33,7 @@ export default function ProfilePage() {
         return redirect('/login')
     }
     const userImage = session.data.user.image
+
     return(
         <section className="mt-8">
             <h1 className="text-center text-primary text-4xl font-semibold my-4">Profile</h1>
