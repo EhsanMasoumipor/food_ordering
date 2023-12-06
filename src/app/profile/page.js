@@ -1,9 +1,11 @@
 "use client";
 import Image from 'next/image';
+import Link  from 'next/link';
 import { useSession } from "next-auth/react"
 import { redirect } from "next/navigation";
 import { useEffect, useState } from 'react';
-import toast from 'react-hot-toast'
+import toast from 'react-hot-toast';
+import UserTabs from '@/components/layout/UserTabs';
 
 export default function ProfilePage() {
 
@@ -18,6 +20,7 @@ export default function ProfilePage() {
     const [postalCode , setPostalCode] = useState('')
     const [city , setCity] = useState('')
     const [country , setCountry] = useState('')
+    const [isAdmin , setIsAdmin] = useState(true)
     const {status} = session
 
 
@@ -30,6 +33,7 @@ export default function ProfilePage() {
                 setCountry(data.country)
                 setStreetAddress(data.streetAddress)
                 setPostalCode(data.postalCode)
+                setIsAdmin(data.admin)
             }))
             
         }
@@ -88,8 +92,9 @@ export default function ProfilePage() {
 
     return(
         <section className="mt-8">
-            <h1 className="text-center text-primary text-4xl font-semibold my-4">Profile</h1>
-            <div className="max-w-md mx-auto ">
+            <UserTabs isAdmin={isAdmin} />
+
+            <div className="max-w-md mx-auto mt-8 ">
                 {saved && (
                   <h2 className='text-center bg-green-100 rounded-lg border-2 border-green-300 p-4 my-4'>
                     Profile saved!
