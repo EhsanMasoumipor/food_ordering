@@ -21,3 +21,12 @@ export async function GET() {
         await Category.find()
     )
 }
+
+
+export async function DELETE(request) {
+    mongoose.connect(process.env.MONGO_URI);
+    const url = new URL(request.url);
+    const _id = url.searchParams.get('_id');
+    await Category.deleteOne({ _id })
+    return Response.json(true);
+}   
